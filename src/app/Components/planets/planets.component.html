@@ -1,0 +1,107 @@
+<button mat-raised-button (click)="addPlanet()">
+    Добавить планету
+</button>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Название </th>
+        <td mat-cell *matCellDef="let planet; let i = index"> 
+            <ng-container *ngIf="editPlanetNum !== i">
+                {{planet.name}} 
+            </ng-container>
+            <ng-container *ngIf="editPlanetNum === i">
+                <mat-form-field class="example-full-width">
+                    <input matInput type="text" [(ngModel)]="planet.name">
+                </mat-form-field> 
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="mass">
+        <th mat-header-cell *matHeaderCellDef> Масса </th>
+        <td mat-cell *matCellDef="let planet; let i = index"> 
+            <ng-container *ngIf="editPlanetNum !== i">
+                {{planet.mass}} 
+            </ng-container>
+            <ng-container *ngIf="editPlanetNum === i">
+                <mat-form-field class="example-full-width">
+                    <input matInput type="number" [(ngModel)]="planet.mass">
+                </mat-form-field> 
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="diameter">
+        <th mat-header-cell *matHeaderCellDef> Диаметр </th>
+        <td mat-cell *matCellDef="let planet; let i = index"> 
+            <ng-container *ngIf="editPlanetNum !== i">
+                {{planet.diameter}} 
+            </ng-container>
+            <ng-container *ngIf="editPlanetNum === i">
+                <mat-form-field class="example-full-width">
+                    <input matInput type="number" [(ngModel)]="planet.diameter">
+                </mat-form-field> 
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="distance_from_star">
+        <th mat-header-cell *matHeaderCellDef> Расстояние от звезды </th>
+        <td mat-cell *matCellDef="let planet; let i = index"> 
+            <ng-container *ngIf="editPlanetNum !== i">
+                {{planet.distance_from_star}} 
+            </ng-container>
+            <ng-container *ngIf="editPlanetNum === i">
+                <mat-form-field class="example-full-width">
+                    <input matInput type="number" [(ngModel)]="planet.distance_from_star">
+                </mat-form-field> 
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="surface_temperature">
+        <th mat-header-cell *matHeaderCellDef> Поверхностная температура </th>
+        <td mat-cell *matCellDef="let planet; let i = index"> 
+            <ng-container *ngIf="editPlanetNum !== i">
+                {{planet.surface_temperature}} 
+            </ng-container>
+            <ng-container *ngIf="editPlanetNum === i">
+                <mat-form-field class="example-full-width">
+                    <input matInput type="number" [(ngModel)]="planet.surface_temperature">
+                </mat-form-field> 
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="star">
+        <th mat-header-cell *matHeaderCellDef> Звезда </th>
+        <td mat-cell *matCellDef="let planet; let i = index">
+            <ng-container *ngIf="editPlanetNum !== i">
+                {{planet.star.name}} 
+            </ng-container>
+            <ng-container *ngIf="editPlanetNum === i">
+                <mat-form-field>
+                    <mat-select [(value)]="planet.star.id">
+                      <mat-option *ngFor="let star of starList" value="{{star.id}}">{{star.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Действия </th>
+        <td mat-cell *matCellDef="let planet; let i = index">
+            <ng-container *ngIf="editPlanetNum !== i">
+                <button mat-flat-button (click)="editPlanet(i)">Ред.</button>
+            </ng-container> 
+            <ng-container *ngIf="editPlanetNum === i">
+                <button mat-flat-button (click)="savePlanet(i)">Сохр.</button>
+            </ng-container>
+            <button mat-flat-button (click)="deletePlanet(planet.id)">Удалить</button>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+</table>

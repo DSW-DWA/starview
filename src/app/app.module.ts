@@ -3,14 +3,59 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule} from "@angular/common/http";
+
+import {MatTabsModule} from '@angular/material/tabs';
+import { ConstellationsComponent } from './Components/constellations/constellations.component';
+import {MatTableModule} from '@angular/material/table';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {FormsModule} from "@angular/forms";
+import {MatSelectModule} from '@angular/material/select';
+import { ConstellationCreateDialogComponent } from './Components/constellation-create-dialog/constellation-create-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { GalaxiesComponent } from './Components/galaxies/galaxies.component';
+import { PlanetsComponent } from './Components/planets/planets.component';
+import { UniversesComponent } from './Components/universes/universes.component';
+import { StarsComponent } from './Components/stars/stars.component';
+import { UniverseCreateDialogComponent } from './Components/universe-create-dialog/universe-create-dialog.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+import { PlanetCreateDialogComponent } from './Components/planet-create-dialog/planet-create-dialog.component';
+import { GalaxyCreateDialogComponent } from './Components/galaxy-create-dialog/galaxy-create-dialog.component';
+import { StarCreateDialogComponent } from './Components/star-create-dialog/star-create-dialog.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ConstellationsComponent,
+    ConstellationCreateDialogComponent,
+    GalaxiesComponent,
+    PlanetsComponent,
+    UniversesComponent,
+    StarsComponent,
+    UniverseCreateDialogComponent,
+    PlanetCreateDialogComponent,
+    GalaxyCreateDialogComponent,
+    StarCreateDialogComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    MatTabsModule,
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    MatInputModule,
+    FormsModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatDatepickerModule,
+    NgxMaterialTimepickerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,32 @@
+<h1 mat-dialog-title>Create New Item</h1>
+<div mat-dialog-content>
+  <form #itemForm="ngForm">
+    <mat-form-field>
+      <input matInput placeholder="ID" name="id" [(ngModel)]="data.star.id" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Name" name="name" [(ngModel)]="data.star.name" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Spectral Type" name="spectral_type" [(ngModel)]="data.star.spectral_type" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Luminosity" name="luminosity" [(ngModel)]="data.star.luminosity" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Distance from Earth" name="distance_from_earth" [(ngModel)]="data.star.distance_from_earth" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Temperature" name="temperature" [(ngModel)]="data.star.temperature" required>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select [(value)]="data.star.galaxy.id">
+        <mat-option *ngFor="let galaxy of data.galaxyList" [value]="galaxy.id">{{galaxy.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [disabled]="itemForm.invalid" [mat-dialog-close]="data.star" cdkFocusInitial>Ok</button>
+</div>

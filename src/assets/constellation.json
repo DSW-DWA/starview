@@ -1,0 +1,36 @@
+[
+    {
+      "id": "c1",
+      "name": "Orion",
+      "shape": "Hunter",
+      "abbreviation": "Ori",
+      "history": "Orion is one of the most recognizable constellations...",
+      "galaxy": {
+        "id": "g1",
+        "name": "Milky Way"
+      }
+    },
+    {
+      "id": "c2",
+      "name": "Ursa Major",
+      "shape": "Bear",
+      "abbreviation": "UMa",
+      "history": "Ursa Major contains the well-known Big Dipper...",
+      "galaxy": {
+        "id": "g1",
+        "name": "Milky Way"
+      }
+    },
+    {
+      "id": "c3",
+      "name": "Cygnus",
+      "shape": "Swan",
+      "abbreviation": "Cyg",
+      "history": "Cygnus is a northern constellation...",
+      "galaxy": {
+        "id": "g1",
+        "name": "Milky Way"
+      }
+    }
+  ]
+  

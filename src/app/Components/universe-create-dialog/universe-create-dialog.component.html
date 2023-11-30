@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>Create New Universe</h1>
+<div mat-dialog-content>
+  <form #universeForm="ngForm">
+    <mat-form-field>
+      <input matInput placeholder="ID" name="id" [(ngModel)]="data.universe.id" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Name" name="name" [(ngModel)]="data.universe.name" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Size" type="number" name="size" [(ngModel)]="data.universe.size" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Composition" name="composition" [(ngModel)]="data.universe.composition" required>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [disabled]="universeForm.invalid" [mat-dialog-close]="data.universe" cdkFocusInitial>Save</button>
+</div>

@@ -1,0 +1,93 @@
+<button mat-raised-button (click)="addElement()">
+    Добавить созвездие
+</button>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Название </th>
+        <td mat-cell *matCellDef="let element; let i = index"> 
+            <ng-container *ngIf="editElementNum !== i">
+                {{element.name}} 
+            </ng-container>
+            <ng-container *ngIf="editElementNum === i">
+                <mat-form-field class="example-full-width">
+                    <input matInput type="text" [(ngModel)]="element.name">
+                </mat-form-field> 
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="shape">
+        <th mat-header-cell *matHeaderCellDef> Форма </th>
+        <td mat-cell *matCellDef="let element; let i = index"> 
+            <ng-container *ngIf="editElementNum !== i">
+                {{element.shape}} 
+            </ng-container>
+            <ng-container *ngIf="editElementNum === i">
+                <mat-form-field class="example-full-width">
+                    <input matInput type="text" [(ngModel)]="element.shape">
+                </mat-form-field> 
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="abbreviation">
+        <th mat-header-cell *matHeaderCellDef> Аббревиатура </th>
+        <td mat-cell *matCellDef="let element; let i = index"> 
+            <ng-container *ngIf="editElementNum !== i">
+                {{element.abbreviation}} 
+            </ng-container>
+            <ng-container *ngIf="editElementNum === i">
+                <mat-form-field class="example-full-width">
+                    <input matInput type="text" [(ngModel)]="element.abbreviation">
+                </mat-form-field> 
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="history">
+        <th mat-header-cell *matHeaderCellDef> История </th>
+        <td mat-cell *matCellDef="let element; let i = index"> 
+            <ng-container *ngIf="editElementNum !== i">
+                {{element.history}} 
+            </ng-container>
+            <ng-container *ngIf="editElementNum === i">
+                <mat-form-field class="example-full-width">
+                    <textarea matInput type="text" [(ngModel)]="element.history"></textarea>
+                </mat-form-field> 
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="galaxy">
+        <th mat-header-cell *matHeaderCellDef> Галактика </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+            <ng-container *ngIf="editElementNum !== i">
+                {{element.galaxy.name}} 
+            </ng-container>
+            <ng-container *ngIf="editElementNum === i">
+                <mat-form-field>
+                    <mat-select [(value)]="element.galaxy.id">
+                      <mat-option *ngFor="let galaxy of galaxyList" value="{{galaxy.id}}">{{galaxy.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Действия </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+            <ng-container *ngIf="editElementNum !== i">
+                <button mat-flat-button (click)="editElement(i)">Ред.</button>
+            </ng-container> 
+            <ng-container *ngIf="editElementNum === i">
+                <button mat-flat-button (click)="saveElement(i)">Сохр.</button>
+            </ng-container>
+            <button mat-flat-button (click)="deleteElement(element.id)">Удалить</button>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+</table>
