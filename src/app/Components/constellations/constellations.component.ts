@@ -32,20 +32,33 @@ export class ConstellationsComponent implements OnInit {
 
   deleteElement(id: string){
     this.starService.deleteConstellation(id).subscribe(data => {
-      console.log(data)
+      this.getDataSource()
     })
-
-    this.getDataSource()
   }
 
   editElement(id: number){
-    this.editElementNum = id;
-    this.editElementDef = this.dataSource[id];
+    // this.editElementNum = id;
+    let netConst = this.dataSource[id];
+
+    const dialogRef = this.dialog.open(ConstellationCreateDialogComponent, {
+      data: {const: netConst, galaxyList: this.galaxyList},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      netConst.name = result.name
+      netConst.shape = result.shape
+      netConst.abbreviation = result.abbreviation
+      netConst.history = result.history
+      netConst.galaxy = result.galaxy
+      this.starService.updateConstellation(netConst.id, netConst).subscribe(data => {
+        this.getDataSource()
+      })
+    });
   }
 
   saveElement(i: number){
     this.starService.updateConstellation(this.dataSource[i].id, this.dataSource[i]).subscribe(data => {
-      this.dataSource[i] = data
+      this.getDataSource()
       this.editElementNum = -1;
     })
     
@@ -68,8 +81,14 @@ export class ConstellationsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-
+      netConst.name = result.name
+      netConst.shape = result.shape
+      netConst.abbreviation = result.abbreviation
+      netConst.history = result.history
+      netConst.galaxy = result.galaxy
+      this.starService.addConstellation(netConst).subscribe(data => {
+        this.getDataSource()
+      })
     });
   }
   getDataSource() {

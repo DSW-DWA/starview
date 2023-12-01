@@ -30,15 +30,26 @@ ngOnInit() {
 
 deleteUniverse(id: string) {
   this.universeService.deleteUniverse(id).subscribe(data => {
-    console.log(data);
+    this.getDataSource()
   });
-
-  this.getDataSource();
 }
 
 editUniverse(id: number) {
-  this.editUniverseNum = id;
-  this.editUniverseDef = this.dataSource[id];
+  //this.editUniverseNum = id;
+  let newUniverse = this.dataSource[id];
+
+  const dialogRef = this.dialog.open(UniverseCreateDialogComponent, {
+    data: { universe: newUniverse },
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    newUniverse.name = result.name
+    newUniverse.size = result.size
+    newUniverse.composition = result.composition
+    this.universeService.updateUniverse(newUniverse.id, newUniverse).subscribe(data => {
+      this.getDataSource();
+    })
+  });
 }
 
 saveUniverse(i: number) {
@@ -60,14 +71,18 @@ addUniverse() {
   });
 
   dialogRef.afterClosed().subscribe(result => {
-    console.log(result);
-    // Perform actions with the result if needed
+    newUniverse.name = result.name
+    newUniverse.size = result.size
+    newUniverse.composition = result.composition
+    this.universeService.addUniverse(newUniverse).subscribe(data => {
+      this.getDataSource();
+    })
   });
 }
 
-getDataSource() {
-  this.universeService.getAllUniverse().subscribe(data => {
-    this.dataSource = data;
-  });
-}
+  getDataSource() {
+    this.universeService.getAllUniverse().subscribe(data => {
+      this.dataSource = data;
+    });
+  }
 }

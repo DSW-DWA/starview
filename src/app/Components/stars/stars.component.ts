@@ -32,20 +32,34 @@ export class StarsComponent {
 
   deleteElement(id: string){
     this.starService.deleteStar(id).subscribe(data => {
-      console.log(data);
+      this.getDataSource()
     });
-
-    this.getDataSource();
   }
 
   editElement(id: number){
-    this.editElementNum = id;
-    this.editElementDef = this.dataSource[id];
+    //this.editElementNum = id;
+    let netStar = this.dataSource[id];
+
+    const dialogRef = this.dialog.open(StarCreateDialogComponent, {
+      data: {star: netStar, galaxyList: this.galaxyList},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      netStar.name = result.name
+      netStar.spectral_type = result.spectral_type
+      netStar.luminosity = result.luminosity
+      netStar.distance_from_earth = result.distance_from_earth
+      netStar.temperature = result.temperature
+      netStar.galaxy = result.galaxy
+      this.starService.updateStar(netStar.id, netStar).subscribe(data => {
+        this.getDataSource()
+      })
+    });
   }
 
   saveElement(i: number){
     this.starService.updateStar(this.dataSource[i].id, this.dataSource[i]).subscribe(data => {
-      this.dataSource[i] = data;
+      this.getDataSource()
       this.editElementNum = -1;
     });
   }
@@ -68,7 +82,15 @@ export class StarsComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
+      netStar.name = result.name
+      netStar.spectral_type = result.spectral_type
+      netStar.luminosity = result.luminosity
+      netStar.distance_from_earth = result.distance_from_earth
+      netStar.temperature = result.temperature
+      netStar.galaxy = result.galaxy
+      this.starService.addStar(netStar).subscribe(data => {
+        this.getDataSource()
+      })
     });
   }
 

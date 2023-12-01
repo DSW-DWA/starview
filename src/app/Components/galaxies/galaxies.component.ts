@@ -32,15 +32,30 @@ export class GalaxiesComponent {
 
   deleteGalaxy(id: string) {
     this.starService.deleteGalaxy(id).subscribe(data => {
-      console.log(data);
+      this.getDataSource()
     });
-
-    this.getDataSource();
   }
 
   editGalaxy(index: number) {
-    this.editGalaxyNum = index;
-    this.editGalaxyDef = this.dataSource[index];
+    //this.editGalaxyNum = index;
+    let newGalaxy = this.dataSource[index];
+
+    const dialogRef = this.dialog.open(GalaxyCreateDialogComponent, {
+      data: { galaxy: newGalaxy, universeList: this.universeList },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      newGalaxy.name = result.name
+      newGalaxy.size = result.size
+      newGalaxy.shape = result.shape
+      newGalaxy.composition = result.composition
+      newGalaxy.distance_from_earth = result.distance_from_earth
+      newGalaxy.universe = result.universe
+
+      this.starService.updateGalaxy(newGalaxy.id,newGalaxy).subscribe(data => {
+        this.getDataSource();
+      })
+    });
   }
 
   saveGalaxy(index: number) {
@@ -71,7 +86,16 @@ export class GalaxiesComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
+      newGalaxy.name = result.name
+      newGalaxy.size = result.size
+      newGalaxy.shape = result.shape
+      newGalaxy.composition = result.composition
+      newGalaxy.distance_from_earth = result.distance_from_earth
+      newGalaxy.universe = result.universe
+
+      this.starService.addGalaxy(newGalaxy).subscribe(data => {
+        this.getDataSource();
+      })
     });
   }
 

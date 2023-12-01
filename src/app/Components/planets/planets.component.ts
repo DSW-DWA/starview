@@ -32,20 +32,35 @@ export class PlanetsComponent {
 
   deletePlanet(id: string) {
     this.planetService.deletePlanet(id).subscribe(data => {
-      console.log(data);
+      this.getDataSource()
     });
-
-    this.getDataSource();
   }
 
   editPlanet(id: number) {
-    this.editPlanetNum = id;
-    this.editPlanetDef = this.dataSource[id];
+    //this.editPlanetNum = id;
+    let newPlanet = this.dataSource[id];
+
+    const dialogRef = this.dialog.open(PlanetCreateDialogComponent, {
+      data: { planet: newPlanet, starList: this.starList }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      newPlanet.name = result.name
+      newPlanet.mass = result.mass
+      newPlanet.diameter = result.diameter
+      newPlanet.distance_from_star = result.distance_from_star
+      newPlanet.surface_temperature = result.surface_temperature
+      newPlanet.star = result.star
+
+      this.planetService.updatePlanet(newPlanet.id, newPlanet).subscribe(data => {
+        this.getDataSource()
+      })
+    });
   }
 
   savePlanet(i: number) {
     this.planetService.updatePlanet(this.dataSource[i].id, this.dataSource[i]).subscribe(data => {
-      this.dataSource[i] = data;
+      this.getDataSource()
       this.editPlanetNum = -1;
     });
   }
@@ -69,8 +84,16 @@ export class PlanetsComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-      // Perform actions with the result if needed
+      newPlanet.name = result.name
+      newPlanet.mass = result.mass
+      newPlanet.diameter = result.diameter
+      newPlanet.distance_from_star = result.distance_from_star
+      newPlanet.surface_temperature = result.surface_temperature
+      newPlanet.star = result.star
+
+      this.planetService.addPlanet(newPlanet).subscribe(data => {
+        this.getDataSource()
+      })
     });
   }
 
