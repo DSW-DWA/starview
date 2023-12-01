@@ -1,21 +1,27 @@
 <h1 mat-dialog-title>Create New Item</h1>
 <div mat-dialog-content>
   <form #itemForm="ngForm">
+    Имя
     <mat-form-field>
       <input matInput placeholder="Name" name="name" [(ngModel)]="data.star.name" required>
     </mat-form-field>
+    Тип
     <mat-form-field>
       <input matInput placeholder="Spectral Type" name="spectral_type" [(ngModel)]="data.star.spectral_type" required>
     </mat-form-field>
+    Яркость
     <mat-form-field>
       <input matInput placeholder="Luminosity" name="luminosity" [(ngModel)]="data.star.luminosity" required>
     </mat-form-field>
+    Расстояние до земли
     <mat-form-field>
       <input matInput placeholder="Distance from Earth" name="distance_from_earth" [(ngModel)]="data.star.distance_from_earth" required>
     </mat-form-field>
+    Температура
     <mat-form-field>
       <input matInput placeholder="Temperature" name="temperature" [(ngModel)]="data.star.temperature" required>
     </mat-form-field>
+    Галактика
     <mat-form-field>
       <mat-select [(value)]="data.star.galaxy.id">
         <mat-option *ngFor="let galaxy of data.galaxyList" [value]="galaxy.id">{{galaxy.name}}</mat-option>

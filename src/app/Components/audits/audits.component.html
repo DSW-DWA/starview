@@ -1,0 +1,51 @@
+<mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+</mat-form-field>
+
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <ng-container matColumnDef="operationType">
+        <th mat-header-cell *matHeaderCellDef> Тип операции </th>
+        <td mat-cell *matCellDef="let element; let i = index"> 
+            {{element.operation_type}} 
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="tableName">
+        <th mat-header-cell *matHeaderCellDef> Название таблицы </th>
+        <td mat-cell *matCellDef="let element; let i = index"> 
+            {{element.table_name}} 
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="rowId">
+        <th mat-header-cell *matHeaderCellDef> Идентификатор строки </th>
+        <td mat-cell *matCellDef="let element; let i = index"> 
+            {{element.row_id}} 
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="oldValue">
+        <th mat-header-cell *matHeaderCellDef> Старое значение </th>
+        <td mat-cell *matCellDef="let element; let i = index"> 
+            {{element.old_value}} 
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="newValue">
+        <th mat-header-cell *matHeaderCellDef> Новое значение </th>
+        <td mat-cell *matCellDef="let element; let i = index"> 
+            {{element.new_value}} 
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="timestamp">
+        <th mat-header-cell *matHeaderCellDef> Временная метка </th>
+        <td mat-cell *matCellDef="let element; let i = index"> 
+            {{element.timestamp}} 
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+</table>

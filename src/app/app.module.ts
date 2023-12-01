@@ -26,6 +26,9 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import { PlanetCreateDialogComponent } from './Components/planet-create-dialog/planet-create-dialog.component';
 import { GalaxyCreateDialogComponent } from './Components/galaxy-create-dialog/galaxy-create-dialog.component';
 import { StarCreateDialogComponent } from './Components/star-create-dialog/star-create-dialog.component';
+import { AlertDialogComponent } from './Components/alert-dialog/alert-dialog.component';
+import { OtherComponent } from './Components/other/other.component';
+import { AuditsComponent } from './Components/audits/audits.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,10 @@ import { StarCreateDialogComponent } from './Components/star-create-dialog/star-
     UniverseCreateDialogComponent,
     PlanetCreateDialogComponent,
     GalaxyCreateDialogComponent,
-    StarCreateDialogComponent
+    StarCreateDialogComponent,
+    AlertDialogComponent,
+    OtherComponent,
+    AuditsComponent
   ],
   imports: [
     BrowserModule,

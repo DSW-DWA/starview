@@ -1,21 +1,27 @@
 <h1 mat-dialog-title>Create New Planet</h1>
 <div mat-dialog-content>
   <form #planetForm="ngForm">
+    Имя
     <mat-form-field>
       <input matInput placeholder="Name" name="name" [(ngModel)]="data.planet.name" required>
     </mat-form-field>
+    Масса
     <mat-form-field>
       <input matInput placeholder="Mass" type="number" name="mass" [(ngModel)]="data.planet.mass" required>
     </mat-form-field>
+    Диаметр
     <mat-form-field>
       <input matInput placeholder="Diameter" type="number" name="diameter" [(ngModel)]="data.planet.diameter" required>
     </mat-form-field>
+    Расстояние от звезды
     <mat-form-field>
       <input matInput placeholder="Distance from Star" type="number" name="distance_from_star" [(ngModel)]="data.planet.distance_from_star" required>
     </mat-form-field>
+    Температура поверхности
     <mat-form-field>
       <input matInput placeholder="Surface Temperature" type="number" name="surface_temperature" [(ngModel)]="data.planet.surface_temperature" required>
     </mat-form-field>
+    Звезда
     <mat-form-field>
       <mat-select [(value)]="data.planet.star.id" name="star">
         <mat-option *ngFor="let star of data.starList" [value]="star.id">{{star.name}}</mat-option>

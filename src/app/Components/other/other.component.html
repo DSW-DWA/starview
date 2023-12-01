@@ -1,0 +1,26 @@
+<div class="other">
+    Выберите вселенную
+    <mat-form-field >
+        <mat-select [(value)]="selectedUid">
+        <mat-option *ngFor="let universe of universeList" value="{{universe.id}}">{{universe.name}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button mat-raised-button (click)="generateExcelReport()">
+        Сгенерировать excel отчет
+    </button>
+    <button mat-raised-button (click)="generateWordReport()">
+        Сгенерировать word отчет
+    </button>
+</div>
+<div class="download">
+    <a href="{{excelUrl}}" *ngIf="excelUrl">
+        <button mat-raised-button >
+            Скачать excel отчет
+        </button>
+    </a>
+    <a href="{{wordUrl}}" *ngIf="wordUrl">
+        <button mat-raised-button >
+            Скачать word отчет
+        </button>
+    </a>
+</div>

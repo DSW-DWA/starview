@@ -1,12 +1,15 @@
 <h1 mat-dialog-title>Create New Universe</h1>
 <div mat-dialog-content>
   <form #universeForm="ngForm">
+    Имя
     <mat-form-field>
       <input matInput placeholder="Name" name="name" [(ngModel)]="data.universe.name" required>
     </mat-form-field>
+    Размер
     <mat-form-field>
       <input matInput placeholder="Size" type="number" name="size" [(ngModel)]="data.universe.size" required>
     </mat-form-field>
+    Состав
     <mat-form-field>
       <input matInput placeholder="Composition" name="composition" [(ngModel)]="data.universe.composition" required>
     </mat-form-field>

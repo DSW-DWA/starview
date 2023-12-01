@@ -4,6 +4,8 @@ import { Galaxy } from 'src/app/Interfaces/galaxy';
 import { Star } from 'src/app/Interfaces/star';
 import { StarService } from 'src/app/Services/star.service';
 import { StarCreateDialogComponent } from '../star-create-dialog/star-create-dialog.component';
+import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-stars',
@@ -12,7 +14,7 @@ import { StarCreateDialogComponent } from '../star-create-dialog/star-create-dia
 })
 export class StarsComponent {
   displayedColumns: string[] = ['name', 'spectral_type', 'luminosity', 'distance_from_earth', 'temperature', 'galaxy', 'actions'];
-  dataSource: Star[] = [];
+  dataSource = new MatTableDataSource<Star>([]);
   editElementNum = -1;
   editElementDef: Star | undefined;
   galaxyList: Galaxy[] = [];
@@ -21,7 +23,10 @@ export class StarsComponent {
     private starService: StarService,
     public dialog: MatDialog
   ){}
-
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
   ngOnInit() {
     this.getDataSource();
 
@@ -33,12 +38,15 @@ export class StarsComponent {
   deleteElement(id: string){
     this.starService.deleteStar(id).subscribe(data => {
       this.getDataSource()
+      this.dialog.open(AlertDialogComponent, {
+        data: {msg: 'Элемент удален'}
+      })
     });
   }
 
   editElement(id: number){
     //this.editElementNum = id;
-    let netStar = this.dataSource[id];
+    let netStar = this.dataSource.data[id];
 
     const dialogRef = this.dialog.open(StarCreateDialogComponent, {
       data: {star: netStar, galaxyList: this.galaxyList},
@@ -53,12 +61,15 @@ export class StarsComponent {
       netStar.galaxy = result.galaxy
       this.starService.updateStar(netStar.id, netStar).subscribe(data => {
         this.getDataSource()
+        this.dialog.open(AlertDialogComponent, {
+          data: {msg: 'Элемент изменен'}
+        })
       })
     });
   }
 
   saveElement(i: number){
-    this.starService.updateStar(this.dataSource[i].id, this.dataSource[i]).subscribe(data => {
+    this.starService.updateStar(this.dataSource.data[i].id, this.dataSource.data[i]).subscribe(data => {
       this.getDataSource()
       this.editElementNum = -1;
     });
@@ -90,13 +101,16 @@ export class StarsComponent {
       netStar.galaxy = result.galaxy
       this.starService.addStar(netStar).subscribe(data => {
         this.getDataSource()
+        this.dialog.open(AlertDialogComponent, {
+          data: {msg: 'Элемент добавлен'}
+        })
       })
     });
   }
 
   getDataSource() {
     this.starService.getAllStars().subscribe(data => {
-      this.dataSource = data;
+      this.dataSource = new MatTableDataSource(data);
     });
 
     this.starService.getAllGalaxies().subscribe(data => {

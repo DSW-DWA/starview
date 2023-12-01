@@ -1,21 +1,27 @@
 <h1 mat-dialog-title>Create New Galaxy</h1>
 <div mat-dialog-content>
   <form #galaxyForm="ngForm">
+    Имя
     <mat-form-field>
       <input matInput placeholder="Name" name="name" [(ngModel)]="data.galaxy.name" required>
     </mat-form-field>
+    Форма
     <mat-form-field>
       <input matInput placeholder="Shape" name="shape" [(ngModel)]="data.galaxy.shape" required>
     </mat-form-field>
+    Состав
     <mat-form-field>
       <input matInput placeholder="Composition" name="composition" [(ngModel)]="data.galaxy.composition" required>
     </mat-form-field>
+    Размер
     <mat-form-field>
       <input matInput placeholder="Size" name="size" [(ngModel)]="data.galaxy.size" required>
     </mat-form-field>
+    Расстояние
     <mat-form-field>
       <input matInput placeholder="Distance from Earth" name="distance_from_earth" [(ngModel)]="data.galaxy.distance_from_earth" required>
     </mat-form-field>
+    Вселенная
     <mat-form-field>
       <mat-select [(value)]="data.galaxy.universe.id">
         <mat-option *ngFor="let universe of data.universeList" value="{{universe.id}}">{{universe.name}}</mat-option>

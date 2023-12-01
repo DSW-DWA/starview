@@ -5,6 +5,8 @@ import { Universe } from '../Interfaces/universe';
 import { Planet } from '../Interfaces/planet';
 import { Galaxy } from '../Interfaces/galaxy';
 import { Star } from '../Interfaces/star';
+import { Reports } from '../Interfaces/reports';
+import { Audit } from '../Interfaces/audit';
 
 @Injectable({
   providedIn: 'root'
@@ -152,5 +154,16 @@ export class StarService {
       galaxy_id: star.galaxy.id
     };
     return this.http.post<Star>(this.url + 'stars', data);
+  }
+
+  getExcelReport(uid: string) {
+    return this.http.get<Reports>(this.url + "reports/excel?universe_id=" + uid, {})
+  }
+  getWordReport(uid: string) {
+    return this.http.get<Reports>(this.url + "reports/word?universe_id=" + uid, {})
+  }
+
+  getAllAudits() {
+    return this.http.get<Audit[]>(this.url + "audit?limit=100&offset=0")
   }
 }

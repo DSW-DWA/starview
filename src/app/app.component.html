@@ -16,5 +16,10 @@
   <mat-tab label="Звезды">
     <app-stars *ngIf="selected.value === 4"></app-stars>
   </mat-tab>
-  <mat-tab label="Другое"></mat-tab>
+  <mat-tab label="Другое">
+    <app-other *ngIf="selected.value === 5"></app-other>
+  </mat-tab>
+  <mat-tab label="История">
+    <app-audits *ngIf="selected.value === 6"></app-audits>
+  </mat-tab>
 </mat-tab-group>

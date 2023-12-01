@@ -1,18 +1,23 @@
 <h1 mat-dialog-title>Create New Item</h1>
 <div mat-dialog-content>
   <form #itemForm="ngForm">
+    Имя
     <mat-form-field>
       <input matInput placeholder="Name" name="name" [(ngModel)]="data.const.name" required>
     </mat-form-field>
+    Фигура
     <mat-form-field>
       <input matInput placeholder="Shape" name="shape" [(ngModel)]="data.const.shape" required>
     </mat-form-field>
+    Аббревиатура
     <mat-form-field>
       <input matInput placeholder="Abbreviation" name="abbreviation" [(ngModel)]="data.const.abbreviation" required>
     </mat-form-field>
+    История
     <mat-form-field>
       <textarea matInput placeholder="History" name="history" [(ngModel)]="data.const.history" required></textarea>
     </mat-form-field>
+    Галактика
     <mat-form-field>
         <mat-select [(value)]="data.const.galaxy.id">
           <mat-option *ngFor="let galaxy of data.galaxyList" value="{{galaxy.id}}">{{galaxy.name}}</mat-option>

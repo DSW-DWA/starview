@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Universe } from 'src/app/Interfaces/universe';
 import { StarService } from 'src/app/Services/star.service';
 import { UniverseCreateDialogComponent } from '../universe-create-dialog/universe-create-dialog.component';
+import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-universes',
@@ -10,8 +12,8 @@ import { UniverseCreateDialogComponent } from '../universe-create-dialog/univers
   styleUrls: ['./universes.component.css']
 })
 export class UniversesComponent {
-  displayedColumns: string[] = ['name', 'size', 'composition', 'actions'];
-dataSource: Universe[] = [];
+displayedColumns: string[] = ['name', 'size', 'composition', 'actions'];
+dataSource = new MatTableDataSource<Universe>([]);
 editUniverseNum = -1;
 editUniverseDef: Universe | undefined;
 
@@ -20,23 +22,31 @@ constructor(
   public dialog: MatDialog
 ) {}
 
+applyFilter(event: Event) {
+  const filterValue = (event.target as HTMLInputElement).value;
+  this.dataSource.filter = filterValue.trim().toLowerCase();
+}
+
 ngOnInit() {
   this.getDataSource();
 
   this.universeService.getAllUniverse().subscribe(data => {
-    this.dataSource = data;
+    this.dataSource = new MatTableDataSource<Universe>(data);
   });
 }
 
 deleteUniverse(id: string) {
   this.universeService.deleteUniverse(id).subscribe(data => {
     this.getDataSource()
+    this.dialog.open(AlertDialogComponent, {
+      data: {msg: 'Элемент удален'}
+    })
   });
 }
 
 editUniverse(id: number) {
   //this.editUniverseNum = id;
-  let newUniverse = this.dataSource[id];
+  let newUniverse = this.dataSource.data[id];
 
   const dialogRef = this.dialog.open(UniverseCreateDialogComponent, {
     data: { universe: newUniverse },
@@ -48,13 +58,15 @@ editUniverse(id: number) {
     newUniverse.composition = result.composition
     this.universeService.updateUniverse(newUniverse.id, newUniverse).subscribe(data => {
       this.getDataSource();
+      this.dialog.open(AlertDialogComponent, {
+        data: {msg: 'Элемент изменен'}
+      })
     })
   });
 }
 
 saveUniverse(i: number) {
-  this.universeService.updateUniverse(this.dataSource[i].id, this.dataSource[i]).subscribe(data => {
-    this.dataSource[i] = data;
+  this.universeService.updateUniverse(this.dataSource.data[i].id, this.dataSource.data[i]).subscribe(data => {
     this.editUniverseNum = -1;
   });
 }
@@ -76,13 +88,16 @@ addUniverse() {
     newUniverse.composition = result.composition
     this.universeService.addUniverse(newUniverse).subscribe(data => {
       this.getDataSource();
+      this.dialog.open(AlertDialogComponent, {
+        data: {msg: 'Элемент добавлен'}
+      })
     })
   });
 }
 
   getDataSource() {
     this.universeService.getAllUniverse().subscribe(data => {
-      this.dataSource = data;
+      this.dataSource = new MatTableDataSource(data);
     });
   }
 }
