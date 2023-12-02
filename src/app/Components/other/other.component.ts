@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 
 import { StarService } from 'src/app/Services/star.service';
 import { Galaxy } from 'src/app/Interfaces/galaxy';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-other',

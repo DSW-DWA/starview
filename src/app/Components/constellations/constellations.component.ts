@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import { Constellation } from 'src/app/Interfaces/constellation';
 import { StarService } from 'src/app/Services/star.service';
 import { Galaxy } from 'src/app/Interfaces/galaxy';
@@ -7,14 +7,14 @@ import { ConstellationCreateDialogComponent } from '../constellation-create-dial
 import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import {Audit} from "../../Interfaces/audit";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-constellations',
   templateUrl: './constellations.component.html',
   styleUrls: ['./constellations.component.css']
 })
-export class ConstellationsComponent implements OnInit {
+export class ConstellationsComponent implements AfterViewInit, OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'shape', 'abbreviation', 'history', 'galaxy', 'actions'];
   dataSource = new MatTableDataSource<Constellation>([]);
   editElementNum = -1;
@@ -33,18 +33,12 @@ export class ConstellationsComponent implements OnInit {
 
   constructor(
     private starService: StarService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
     ){}
-  ngOnInit() {
-    this.getDataSource()
-
-    this.starService.getAllGalaxies().subscribe(data => {
-      this.galaxyList = data
-    })
-  }
 
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+    this.getDataSource()
   }
 
   deleteElement(id: string){
@@ -59,6 +53,28 @@ export class ConstellationsComponent implements OnInit {
         this.popUpEvent.emit('Элемент удален')
       })
     })
+  }
+
+  ngOnInit() {
+    window.addEventListener('storage', this.handleStorageEvent.bind(this));
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('storage', this.handleStorageEvent.bind(this));
+  }
+
+  handleStorageEvent(event: StorageEvent) {
+    if (event.key === 'update') {
+      let snackBarRef = this.snackBar.open('Данные обновлены. Пожалуйста, обновите страницу.', 'Обновить');
+      snackBarRef.onAction().subscribe(() => {
+        this.getDataSource(); // Перезагрузить данные
+      });
+      // snackBarRef.dismissWithAction(); // автоматически обновляет страницу
+    }
+  }
+
+  updateLocalStorage() {
+    localStorage.setItem('update', Date.now().toString());
   }
 
   editElement(id: number){
@@ -77,6 +93,7 @@ export class ConstellationsComponent implements OnInit {
       this.starService.updateConstellation(netConst.id, netConst).subscribe(data => {
         this.getDataSource()
         this.popUpEvent.emit('Элемент изменен')
+        this.updateLocalStorage();
       })
     })
   }
@@ -114,6 +131,7 @@ export class ConstellationsComponent implements OnInit {
       this.starService.addConstellation(netConst).subscribe(data => {
         this.getDataSource()
         this.popUpEvent.emit('Элемент добавлен')
+        this.updateLocalStorage();
       })
     });
   }

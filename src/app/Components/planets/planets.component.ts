@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Planet } from 'src/app/Interfaces/planet';
 import { Star } from 'src/app/Interfaces/star';
@@ -7,13 +7,14 @@ import { PlanetCreateDialogComponent } from '../planet-create-dialog/planet-crea
 import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
 import {MatSort} from "@angular/material/sort";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-planets',
   templateUrl: './planets.component.html',
   styleUrls: ['./planets.component.css']
 })
-export class PlanetsComponent implements AfterViewInit {
+export class PlanetsComponent implements AfterViewInit, OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'mass', 'diameter', 'distance_from_star', 'surface_temperature', 'star', 'actions'];
   dataSource = new MatTableDataSource<Planet>([]);
   editPlanetNum = -1;
@@ -25,7 +26,8 @@ export class PlanetsComponent implements AfterViewInit {
 
   constructor(
     private planetService: StarService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {}
 
   applyFilter(event: Event): void {
@@ -39,6 +41,28 @@ export class PlanetsComponent implements AfterViewInit {
     this.getDataSource();
   }
 
+  ngOnInit() {
+    window.addEventListener('storage', this.handleStorageEvent.bind(this));
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('storage', this.handleStorageEvent.bind(this));
+  }
+
+  handleStorageEvent(event: StorageEvent) {
+    if (event.key === 'update') {
+      let snackBarRef = this.snackBar.open('Данные обновлены. Пожалуйста, обновите страницу.', 'Обновить');
+      snackBarRef.onAction().subscribe(() => {
+        this.getDataSource(); // Перезагрузить данные
+      });
+      // snackBarRef.dismissWithAction(); // автоматически обновляет страницу
+    }
+  }
+
+  updateLocalStorage() {
+    localStorage.setItem('update', Date.now().toString());
+  }
+
   deletePlanet(id: string) {
     let dialogRef = this.dialog.open(AlertDialogComponent, {
       data: {msg: 'Удалить элемент?'}
@@ -49,6 +73,7 @@ export class PlanetsComponent implements AfterViewInit {
       this.planetService.deletePlanet(id).subscribe(data => {
         this.getDataSource()
         this.popUpEvent.emit('Элемент удален')
+        this.updateLocalStorage();
       })
     })
   }
@@ -71,6 +96,7 @@ export class PlanetsComponent implements AfterViewInit {
       this.planetService.updatePlanet(newPlanet.id, newPlanet).subscribe(data => {
         this.getDataSource()
         this.popUpEvent.emit('Элемент изменен')
+        this.updateLocalStorage();
       })
     });
   }
@@ -111,6 +137,7 @@ export class PlanetsComponent implements AfterViewInit {
       this.planetService.addPlanet(newPlanet).subscribe(data => {
         this.getDataSource()
         this.popUpEvent.emit('Элемент добавлен')
+        this.updateLocalStorage();
       })
     });
   }

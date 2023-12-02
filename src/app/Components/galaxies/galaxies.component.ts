@@ -1,4 +1,4 @@
-import {Component, EventEmitter, AfterViewInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, AfterViewInit, Output, ViewChild, OnInit, OnDestroy} from '@angular/core';
 import { MatSort } from "@angular/material/sort";
 import { MatDialog } from '@angular/material/dialog';
 import { Galaxy } from 'src/app/Interfaces/galaxy';
@@ -7,13 +7,14 @@ import { StarService } from 'src/app/Services/star.service';
 import { GalaxyCreateDialogComponent } from '../galaxy-create-dialog/galaxy-create-dialog.component';
 import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-galaxies',
   templateUrl: './galaxies.component.html',
   styleUrls: ['./galaxies.component.css']
 })
-export class GalaxiesComponent implements AfterViewInit {
+export class GalaxiesComponent implements AfterViewInit, OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'size', 'shape', 'composition', 'distance_from_earth', 'universe', 'actions'];
   dataSource = new MatTableDataSource<Galaxy>([]);
   editGalaxyNum = -1;
@@ -25,7 +26,8 @@ export class GalaxiesComponent implements AfterViewInit {
 
   constructor(
     private starService: StarService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngAfterViewInit() {
@@ -33,6 +35,28 @@ export class GalaxiesComponent implements AfterViewInit {
     this.starService.getAllUniverse().subscribe(data => {
       this.universeList = data;
     });
+  }
+
+  ngOnInit() {
+    window.addEventListener('storage', this.handleStorageEvent.bind(this));
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('storage', this.handleStorageEvent.bind(this));
+  }
+
+  handleStorageEvent(event: StorageEvent) {
+    if (event.key === 'update') {
+      let snackBarRef = this.snackBar.open('Данные обновлены. Пожалуйста, обновите страницу.', 'Обновить');
+      snackBarRef.onAction().subscribe(() => {
+        this.getDataSource(); // Перезагрузить данные
+      });
+      // snackBarRef.dismissWithAction(); // автоматически обновляет страницу
+    }
+  }
+
+  updateLocalStorage() {
+    localStorage.setItem('update', Date.now().toString());
   }
 
   applyFilter(event: Event): void {
@@ -51,16 +75,13 @@ export class GalaxiesComponent implements AfterViewInit {
       if (result)
       this.starService.deleteGalaxy(id).subscribe(data => {
         this.getDataSource()
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент удален'}
-        // })
         this.popUpEvent.emit('Элемент удален')
+        this.updateLocalStorage();
       })
     })
   }
 
   editGalaxy(index: number) {
-    //this.editGalaxyNum = index;
     let newGalaxy = this.dataSource.data[index];
 
     const dialogRef = this.dialog.open(GalaxyCreateDialogComponent, {
@@ -77,10 +98,8 @@ export class GalaxiesComponent implements AfterViewInit {
 
       this.starService.updateGalaxy(newGalaxy.id,newGalaxy).subscribe(data => {
         this.getDataSource();
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент изменен'}
-        // })
         this.popUpEvent.emit('Элемент изменен')
+        this.updateLocalStorage();
       })
     });
   }
@@ -122,10 +141,8 @@ export class GalaxiesComponent implements AfterViewInit {
 
       this.starService.addGalaxy(newGalaxy).subscribe(data => {
         this.getDataSource();
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент добавлен'}
-        // })
         this.popUpEvent.emit('Элемент добавлен')
+        this.updateLocalStorage();
       })
     });
   }

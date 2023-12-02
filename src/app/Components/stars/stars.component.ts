@@ -1,4 +1,4 @@
-import {Component, EventEmitter, AfterViewInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, AfterViewInit,OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Galaxy } from 'src/app/Interfaces/galaxy';
 import { Star } from 'src/app/Interfaces/star';
@@ -7,13 +7,14 @@ import { StarCreateDialogComponent } from '../star-create-dialog/star-create-dia
 import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
 import {MatSort} from "@angular/material/sort";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-stars',
   templateUrl: './stars.component.html',
   styleUrls: ['./stars.component.css']
 })
-export class StarsComponent implements AfterViewInit {
+export class StarsComponent implements AfterViewInit, OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'spectral_type', 'luminosity', 'distance_from_earth', 'temperature', 'galaxy', 'actions'];
   dataSource = new MatTableDataSource<Star>([]);
   editElementNum = -1;
@@ -24,7 +25,8 @@ export class StarsComponent implements AfterViewInit {
 
   constructor(
     private starService: StarService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ){}
 
   applyFilter(event: Event): void {
@@ -36,6 +38,28 @@ export class StarsComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.getDataSource();
+  }
+
+  ngOnInit() {
+    window.addEventListener('storage', this.handleStorageEvent.bind(this));
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('storage', this.handleStorageEvent.bind(this));
+  }
+
+  handleStorageEvent(event: StorageEvent) {
+    if (event.key === 'update') {
+      let snackBarRef = this.snackBar.open('Данные обновлены. Пожалуйста, обновите страницу.', 'Обновить');
+      snackBarRef.onAction().subscribe(() => {
+        this.getDataSource(); // Перезагрузить данные
+      });
+      // snackBarRef.dismissWithAction(); // автоматически обновляет страницу
+    }
+  }
+
+  updateLocalStorage() {
+    localStorage.setItem('update', Date.now().toString());
   }
 
   getDataSource() {
@@ -60,6 +84,7 @@ export class StarsComponent implements AfterViewInit {
       this.starService.deleteStar(id).subscribe(data => {
         this.getDataSource()
         this.popUpEvent.emit('Элемент удален')
+        this.updateLocalStorage();
       })
     })
   }
@@ -81,6 +106,7 @@ export class StarsComponent implements AfterViewInit {
       this.starService.updateStar(netStar.id, netStar).subscribe(data => {
         this.getDataSource()
         this.popUpEvent.emit('Элемент изменен')
+        this.updateLocalStorage();
       })
     });
   }
@@ -119,6 +145,7 @@ export class StarsComponent implements AfterViewInit {
       this.starService.addStar(netStar).subscribe(data => {
         this.getDataSource()
         this.popUpEvent.emit('Элемент добавлен')
+        this.updateLocalStorage();
       })
     });
   }
