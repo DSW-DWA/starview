@@ -3,86 +3,95 @@
 </button>
 
 <mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+  <mat-label>Filter Column</mat-label>
+  <mat-select [(value)]="selectedColumn">
+    <mat-option *ngFor="let column of displayedColumns" [value]="column">
+      {{ column }}
+    </mat-option>
+  </mat-select>
 </mat-form-field>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<mat-form-field>
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+</mat-form-field>
+
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
     <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef> Название </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Название </th>
+        <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
-                {{element.name}} 
+                {{element.name}}
             </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="text" [(ngModel)]="element.name">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="spectral_type">
-        <th mat-header-cell *matHeaderCellDef> Спектральный тип </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Спектральный тип </th>
+        <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
-                {{element.spectral_type}} 
+                {{element.spectral_type}}
             </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="text" [(ngModel)]="element.spectral_type">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="luminosity">
-        <th mat-header-cell *matHeaderCellDef> Светимость </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Светимость </th>
+        <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
-                {{element.luminosity}} 
+                {{element.luminosity}}
             </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="number" [(ngModel)]="element.luminosity">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="distance_from_earth">
-        <th mat-header-cell *matHeaderCellDef> Расстояние от Земли </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Расстояние от Земли </th>
+        <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
-                {{element.distance_from_earth}} 
+                {{element.distance_from_earth}}
             </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="number" [(ngModel)]="element.distance_from_earth">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="temperature">
-        <th mat-header-cell *matHeaderCellDef> Температура </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Температура </th>
+        <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
-                {{element.temperature}} 
+                {{element.temperature}}
             </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="number" [(ngModel)]="element.temperature">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="galaxy">
-        <th mat-header-cell *matHeaderCellDef> Галактика </th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Галактика </th>
         <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
-                {{element.galaxy.name}} 
+                {{element.galaxy.name}}
             </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <mat-form-field>
@@ -99,7 +108,7 @@
         <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
                 <button mat-flat-button (click)="editElement(i)">Ред.</button>
-            </ng-container> 
+            </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <button mat-flat-button (click)="saveElement(i)">Сохр.</button>
             </ng-container>

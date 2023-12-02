@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Planet } from 'src/app/Interfaces/planet';
 import { Star } from 'src/app/Interfaces/star';
@@ -6,36 +6,37 @@ import { StarService } from 'src/app/Services/star.service';
 import { PlanetCreateDialogComponent } from '../planet-create-dialog/planet-create-dialog.component';
 import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-planets',
   templateUrl: './planets.component.html',
   styleUrls: ['./planets.component.css']
 })
-export class PlanetsComponent {
+export class PlanetsComponent implements AfterViewInit {
   displayedColumns: string[] = ['name', 'mass', 'diameter', 'distance_from_star', 'surface_temperature', 'star', 'actions'];
   dataSource = new MatTableDataSource<Planet>([]);
   editPlanetNum = -1;
-  editPlanetDef: Planet | undefined;
   starList: Star[] = [];
+  selectedColumn: string = this.displayedColumns[0];
   @Output() popUpEvent = new EventEmitter<string>();
+
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(
     private planetService: StarService,
     public dialog: MatDialog
   ) {}
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.dataSource.filterPredicate = (data, filter) =>
+      (data[this.selectedColumn]?.toString().toLowerCase().includes(filter) ?? false);
+    this.dataSource.filter = filterValue;
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.getDataSource();
-
-    this.planetService.getAllStars().subscribe(data => {
-      this.starList = data;
-    });
   }
 
   deletePlanet(id: string) {
@@ -47,16 +48,12 @@ export class PlanetsComponent {
       if (result)
       this.planetService.deletePlanet(id).subscribe(data => {
         this.getDataSource()
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент удален'}
-        // })
         this.popUpEvent.emit('Элемент удален')
       })
     })
   }
 
   editPlanet(id: number) {
-    //this.editPlanetNum = id;
     let newPlanet = this.dataSource.data[id];
 
     const dialogRef = this.dialog.open(PlanetCreateDialogComponent, {
@@ -73,9 +70,6 @@ export class PlanetsComponent {
 
       this.planetService.updatePlanet(newPlanet.id, newPlanet).subscribe(data => {
         this.getDataSource()
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент изменен'}
-        // })
         this.popUpEvent.emit('Элемент изменен')
       })
     });
@@ -116,9 +110,6 @@ export class PlanetsComponent {
 
       this.planetService.addPlanet(newPlanet).subscribe(data => {
         this.getDataSource()
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент добавлен'}
-        // })
         this.popUpEvent.emit('Элемент добавлен')
       })
     });
@@ -127,10 +118,12 @@ export class PlanetsComponent {
   getDataSource() {
     this.planetService.getAllPlanets().subscribe(data => {
       this.dataSource = new MatTableDataSource<Planet>(data);
+      this.dataSource.sort = this.sort;
     });
 
     this.planetService.getAllStars().subscribe(data => {
       this.starList = data;
+      this.dataSource.sort = this.sort;
     });
   }
 }

@@ -1,78 +1,37 @@
 <div class="other">
-    Выберите галактику
-    <mat-form-field >
-        <mat-select [(value)]="selectedUid">
-        <mat-option *ngFor="let universe of universeList" value="{{universe.id}}">{{universe.name}}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <button mat-raised-button (click)="generateExcelReport()">
-        Сгенерировать excel отчет
-    </button>
-    <button mat-raised-button (click)="generateWordReport()">
-        Сгенерировать word отчет
-    </button>
-</div>
-<div class="download">
-    <a href="{{excelUrl}}" *ngIf="excelUrl">
-        <button mat-raised-button >
-            Скачать excel отчет
-        </button>
-    </a>
-    <a href="{{wordUrl}}" *ngIf="wordUrl">
-        <button mat-raised-button >
-            Скачать word отчет
-        </button>
-    </a>
+  Выберите галактику
+  <mat-form-field>
+    <mat-select [(ngModel)]="selectedUid" (selectionChange)="loadGalaxyData(selectedUid)">
+      <mat-option *ngFor="let universe of galaxyList" [value]="universe.id">{{universe.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 
-<mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-</mat-form-field>
+<div class="download">
+  <button mat-raised-button (click)="generateExcelReport(selectedUid)">
+    Скачать excel отчет
+  </button>
+
+  <button mat-raised-button (click)="generateWordReport(selectedUid)">
+    Скачать word отчет
+  </button>
+</div>
 
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-    <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef> Имя </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
-            {{element.name}} 
-        </td>
-    </ng-container>
+  <ng-container matColumnDef="category">
+    <th mat-header-cell *matHeaderCellDef> Категория </th>
+    <td mat-cell *matCellDef="let element; let i = index">
+      {{element.category}}
+    </td>
+  </ng-container>
 
-    <ng-container matColumnDef="shape">
-        <th mat-header-cell *matHeaderCellDef> Фигура </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
-            {{element.shape}} 
-        </td>
-    </ng-container>
+  <ng-container matColumnDef="description">
+    <th mat-header-cell *matHeaderCellDef> Описание </th>
+    <td mat-cell *matCellDef="let element; let i = index">
+      {{element.description}}
+    </td>
+  </ng-container>
 
-    <ng-container matColumnDef="size">
-        <th mat-header-cell *matHeaderCellDef> Размер </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
-            {{element.size}} 
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="stars">
-        <th mat-header-cell *matHeaderCellDef> Звезды</th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
-            {{element.stars}} 
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="planets">
-        <th mat-header-cell *matHeaderCellDef> Планеты </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
-            {{element.planets}} 
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="composition">
-        <th mat-header-cell *matHeaderCellDef> Состав </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
-            {{element.composition}} 
-        </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+  <tr mat-header-row *matHeaderRowDef="['category', 'description']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['category', 'description'];"></tr>
 </table>

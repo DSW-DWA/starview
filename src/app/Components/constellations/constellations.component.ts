@@ -7,6 +7,7 @@ import { ConstellationCreateDialogComponent } from '../constellation-create-dial
 import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import {Audit} from "../../Interfaces/audit";
 
 @Component({
   selector: 'app-constellations',
@@ -17,15 +18,17 @@ export class ConstellationsComponent implements OnInit {
   displayedColumns: string[] = ['name', 'shape', 'abbreviation', 'history', 'galaxy', 'actions'];
   dataSource = new MatTableDataSource<Constellation>([]);
   editElementNum = -1;
-  editElementDef: Constellation | undefined;
   galaxyList: Galaxy[] = [];
+  selectedColumn: string = this.displayedColumns[0];
 
   @ViewChild(MatSort)sort: MatSort;
   @Output() popUpEvent = new EventEmitter<string>();
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.dataSource.filterPredicate = (data, filter) =>
+      (data[this.selectedColumn]?.toString().toLowerCase().includes(filter) ?? false);
+    this.dataSource.filter = filterValue;
   }
 
   constructor(
@@ -40,6 +43,10 @@ export class ConstellationsComponent implements OnInit {
     })
   }
 
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  }
+
   deleteElement(id: string){
     let dialogRef = this.dialog.open(AlertDialogComponent, {
       data: {msg: 'Удалить элемент?'}
@@ -49,16 +56,12 @@ export class ConstellationsComponent implements OnInit {
       if (result)
       this.starService.deleteConstellation(id).subscribe(data => {
         this.getDataSource()
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент удален'}
-        // })
         this.popUpEvent.emit('Элемент удален')
       })
-    }) 
+    })
   }
 
   editElement(id: number){
-    // this.editElementNum = id;
     let netConst = this.dataSource.data[id];
 
     const dialogRef = this.dialog.open(ConstellationCreateDialogComponent, {
@@ -73,9 +76,6 @@ export class ConstellationsComponent implements OnInit {
       netConst.galaxy = result.galaxy
       this.starService.updateConstellation(netConst.id, netConst).subscribe(data => {
         this.getDataSource()
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент изменен'}
-        // })
         this.popUpEvent.emit('Элемент изменен')
       })
     })
@@ -86,7 +86,7 @@ export class ConstellationsComponent implements OnInit {
       this.getDataSource()
       this.editElementNum = -1;
     })
-    
+
   }
 
   addElement() {
@@ -113,9 +113,6 @@ export class ConstellationsComponent implements OnInit {
       netConst.galaxy = result.galaxy
       this.starService.addConstellation(netConst).subscribe(data => {
         this.getDataSource()
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент добавлен'}
-        // })
         this.popUpEvent.emit('Элемент добавлен')
       })
     });

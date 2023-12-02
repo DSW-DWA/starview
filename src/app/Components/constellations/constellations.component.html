@@ -3,72 +3,81 @@
 </button>
 
 <mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+  <mat-label>Filter Column</mat-label>
+  <mat-select [(value)]="selectedColumn">
+    <mat-option *ngFor="let column of displayedColumns" [value]="column">
+      {{ column }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
 </mat-form-field>
 
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
     <ng-container matColumnDef="name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef> Название </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
+        <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
-                {{element.name}} 
+                {{element.name}}
             </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="text" [(ngModel)]="element.name">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="shape">
-        <th mat-header-cell *matHeaderCellDef> Форма </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Форма </th>
+        <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
-                {{element.shape}} 
+                {{element.shape}}
             </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="text" [(ngModel)]="element.shape">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="abbreviation">
-        <th mat-header-cell *matHeaderCellDef> Аббревиатура </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Аббревиатура </th>
+        <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
-                {{element.abbreviation}} 
+                {{element.abbreviation}}
             </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="text" [(ngModel)]="element.abbreviation">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="history">
-        <th mat-header-cell *matHeaderCellDef> История </th>
-        <td mat-cell *matCellDef="let element; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> История </th>
+        <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
-                {{element.history}} 
+                {{element.history}}
             </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <mat-form-field class="example-full-width">
                     <textarea matInput type="text" [(ngModel)]="element.history"></textarea>
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="galaxy">
-        <th mat-header-cell *matHeaderCellDef> Галактика </th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Галактика </th>
         <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
-                {{element.galaxy.name}} 
+                {{element.galaxy.name}}
             </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <mat-form-field>
@@ -81,11 +90,11 @@
     </ng-container>
 
     <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Действия </th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Действия </th>
         <td mat-cell *matCellDef="let element; let i = index">
             <ng-container *ngIf="editElementNum !== i">
                 <button mat-flat-button (click)="editElement(i)">Ред.</button>
-            </ng-container> 
+            </ng-container>
             <ng-container *ngIf="editElementNum === i">
                 <button mat-flat-button (click)="saveElement(i)">Сохр.</button>
             </ng-container>

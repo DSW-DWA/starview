@@ -29,6 +29,7 @@ import { StarCreateDialogComponent } from './Components/star-create-dialog/star-
 import { AlertDialogComponent } from './Components/alert-dialog/alert-dialog.component';
 import { OtherComponent } from './Components/other/other.component';
 import { AuditsComponent } from './Components/audits/audits.component';
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { AuditsComponent } from './Components/audits/audits.component';
     MatSelectModule,
     MatDialogModule,
     MatDatepickerModule,
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
+    MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]

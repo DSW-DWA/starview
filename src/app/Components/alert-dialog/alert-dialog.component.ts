@@ -18,10 +18,10 @@ export class AlertDialogComponent {
     onNoClick(): void {
       this.dialogRef.close();
     }
-    
-    ngOnInit(): void {
-      // setTimeout(() => {
-      //   this.dialogRef.close();
-      // }, 3000);
-    }
+    //
+    // ngOnInit(): void {
+    //   // setTimeout(() => {
+    //   //   this.dialogRef.close();
+    //   // }, 3000);
+    // }
 }

@@ -1,12 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Universe } from 'src/app/Interfaces/universe';
-import { StarService } from 'src/app/Services/star.service';
-import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
-import { Audit } from 'src/app/Interfaces/audit';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ReportsInfo } from 'src/app/Interfaces/ReportsInfo';
+import { MatDialog } from '@angular/material/dialog';
+
+import { StarService } from 'src/app/Services/star.service';
 import { Galaxy } from 'src/app/Interfaces/galaxy';
 
 @Component({
@@ -14,58 +10,66 @@ import { Galaxy } from 'src/app/Interfaces/galaxy';
   templateUrl: './other.component.html',
   styleUrls: ['./other.component.css']
 })
-export class OtherComponent {
+export class OtherComponent implements OnInit {
   displayedColumns: string[] = ['name', 'shape', 'size', 'stars', 'planets', 'composition'];
   selectedUid: string | undefined;
-  universeList: Galaxy[] | undefined;
-  wordUrl: string = '';
-  excelUrl: string = '';
-  auditList: Audit[] | undefined;
-  dataSource = new MatTableDataSource<ReportsInfo>([]);
+  galaxyList: Galaxy[] | undefined;
+  dataSource = new MatTableDataSource<GalaxyTableData>();
+
   constructor(
     private universeService: StarService,
     public dialog: MatDialog,
-    private http: HttpClient
   ) {}
-  
-  ngOnInit() {
+
+  ngOnInit(): void {
+    this.loadGalaxies();
+  }
+
+  private loadGalaxies(): void {
     this.universeService.getAllGalaxies().subscribe(data => {
-      this.universeList = data;
-      this.selectedUid = this.universeList[0].id
+      this.galaxyList = data;
+      if (this.galaxyList?.length > 0) {
+        this.selectFirstGalaxy();
+      }
     });
-
-    this.universeService.getAllAudits().subscribe(data => {
-      this.auditList = data;
-    })
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  private selectFirstGalaxy(): void {
+    this.selectedUid = this.galaxyList[0].id;
+    this.loadGalaxyData(this.selectedUid);
   }
 
-  generateExcelReport() {
-    if (!this.selectedUid) {
-      return;
-    }
-    this.universeService.getAllReports(this.selectedUid).subscribe(data => {
-      this.dataSource = new MatTableDataSource<ReportsInfo>([data]);
-      this.universeService.getExcelReport(this.selectedUid).subscribe(data => {
-        this.excelUrl = "http://localhost:8000" + data.link
-      })
-    })
+  loadGalaxyData(galaxyId: string): void {
+    this.universeService.getAllReports(galaxyId).subscribe(data => {
+      this.dataSource.data = this.formatTableData(data);
+    });
   }
 
-  generateWordReport() {
-    if (!this.selectedUid) {
-      return;
-    }
-
-    this.universeService.getAllReports(this.selectedUid).subscribe(data => {
-      this.dataSource = new MatTableDataSource<ReportsInfo>([data]);
-      this.universeService.getWordReport(this.selectedUid).subscribe(data => {
-        this.wordUrl = "http://localhost:8000" + data.link
-      })
-    })
+  private formatTableData(data: any): GalaxyTableData[] { // Update the 'any' type with an appropriate type
+    return [
+      { category: 'Название галактики', description: data.name },
+      { category: 'Тип галактики', description: data.shape },
+      { category: 'Размер галактики', description: `${data.size} млн. км` },
+      { category: 'Основные звезды', description: data.stars },
+      { category: 'Известные планеты', description: data.planets },
+      { category: 'Состав', description: data.composition }
+    ];
   }
+
+  generateExcelReport(galaxyId: string): void {
+    this.universeService.getExcelReport(galaxyId).subscribe(data => {
+      window.open("http://localhost:8000" + data.link, "_blank");
+    });
+  }
+
+  generateWordReport(galaxyId: string): void {
+    this.universeService.getWordReport(galaxyId).subscribe(data => {
+      window.open("http://localhost:8000" + data.link, "_blank");
+    });
+  }
+}
+
+export interface GalaxyTableData {
+  category: string;
+  description: string;
 }

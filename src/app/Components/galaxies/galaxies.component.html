@@ -2,82 +2,96 @@
     Добавить галактику
 </button>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<mat-form-field>
+  <mat-label>Filter Column</mat-label>
+  <mat-select [(value)]="selectedColumn">
+    <mat-option *ngFor="let column of displayedColumns" [value]="column">
+      {{ column }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+</mat-form-field>
+
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
     <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef> Название </th>
-        <td mat-cell *matCellDef="let galaxy; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Название </th>
+        <td mat-cell *matCellDef="let galaxy; let i = index">
             <ng-container *ngIf="editGalaxyNum !== i">
-                {{galaxy.name}} 
+                {{galaxy.name}}
             </ng-container>
             <ng-container *ngIf="editGalaxyNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="text" [(ngModel)]="galaxy.name">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="size">
-        <th mat-header-cell *matHeaderCellDef> Размер </th>
-        <td mat-cell *matCellDef="let galaxy; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Размер </th>
+        <td mat-cell *matCellDef="let galaxy; let i = index">
             <ng-container *ngIf="editGalaxyNum !== i">
-                {{galaxy.size}} 
+                {{galaxy.size}}
             </ng-container>
             <ng-container *ngIf="editGalaxyNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="number" [(ngModel)]="galaxy.size">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="shape">
-        <th mat-header-cell *matHeaderCellDef> Форма </th>
-        <td mat-cell *matCellDef="let galaxy; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Форма </th>
+        <td mat-cell *matCellDef="let galaxy; let i = index">
             <ng-container *ngIf="editGalaxyNum !== i">
-                {{galaxy.shape}} 
+                {{galaxy.shape}}
             </ng-container>
             <ng-container *ngIf="editGalaxyNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="text" [(ngModel)]="galaxy.shape">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="composition">
-        <th mat-header-cell *matHeaderCellDef> Состав </th>
-        <td mat-cell *matCellDef="let galaxy; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Состав </th>
+        <td mat-cell *matCellDef="let galaxy; let i = index">
             <ng-container *ngIf="editGalaxyNum !== i">
-                {{galaxy.composition}} 
+                {{galaxy.composition}}
             </ng-container>
             <ng-container *ngIf="editGalaxyNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="text" [(ngModel)]="galaxy.composition">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="distance_from_earth">
-        <th mat-header-cell *matHeaderCellDef> Расстояние от Земли </th>
-        <td mat-cell *matCellDef="let galaxy; let i = index"> 
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Расстояние от Земли </th>
+        <td mat-cell *matCellDef="let galaxy; let i = index">
             <ng-container *ngIf="editGalaxyNum !== i">
-                {{galaxy.distance_from_earth}} 
+                {{galaxy.distance_from_earth}}
             </ng-container>
             <ng-container *ngIf="editGalaxyNum === i">
                 <mat-form-field class="example-full-width">
                     <input matInput type="number" [(ngModel)]="galaxy.distance_from_earth">
-                </mat-form-field> 
+                </mat-form-field>
             </ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="universe">
-        <th mat-header-cell *matHeaderCellDef> Вселенная </th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Вселенная </th>
         <td mat-cell *matCellDef="let galaxy; let i = index">
             <ng-container *ngIf="editGalaxyNum !== i">
-                {{galaxy.universe.name}} 
+                {{galaxy.universe.name}}
             </ng-container>
             <ng-container *ngIf="editGalaxyNum === i">
                 <mat-form-field>
@@ -90,11 +104,11 @@
     </ng-container>
 
     <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Действия </th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef> Действия </th>
         <td mat-cell *matCellDef="let galaxy; let i = index">
             <ng-container *ngIf="editGalaxyNum !== i">
                 <button mat-flat-button (click)="editGalaxy(i)">Ред.</button>
-            </ng-container> 
+            </ng-container>
             <ng-container *ngIf="editGalaxyNum === i">
                 <button mat-flat-button (click)="saveGalaxy(i)">Сохр.</button>
             </ng-container>

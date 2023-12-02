@@ -1,114 +1,109 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {Component, EventEmitter, AfterViewInit, Output} from '@angular/core';
+import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { Universe } from 'src/app/Interfaces/universe';
 import { StarService } from 'src/app/Services/star.service';
 import { UniverseCreateDialogComponent } from '../universe-create-dialog/universe-create-dialog.component';
 import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-universes',
   templateUrl: './universes.component.html',
   styleUrls: ['./universes.component.css']
 })
-export class UniversesComponent {
-displayedColumns: string[] = ['name', 'size', 'composition', 'actions'];
-dataSource = new MatTableDataSource<Universe>([]);
-editUniverseNum = -1;
-editUniverseDef: Universe | undefined;
-@Output() popUpEvent = new EventEmitter<string>();
+export class UniversesComponent implements AfterViewInit {
+  displayedColumns: string[] = ['name', 'size', 'composition', 'actions'];
+  dataSource = new MatTableDataSource<Universe>([]);
+  editUniverseNum = -1;
+  selectedColumn: string = this.displayedColumns[0];
 
-constructor(
-  private universeService: StarService,
-  public dialog: MatDialog
-) {}
+  @Output() popUpEvent = new EventEmitter<string>();
 
-applyFilter(event: Event) {
-  const filterValue = (event.target as HTMLInputElement).value;
-  this.dataSource.filter = filterValue.trim().toLowerCase();
-}
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-ngOnInit() {
-  this.getDataSource();
+  constructor(
+    private universeService: StarService,
+    public dialog: MatDialog
+  ) {}
 
-  this.universeService.getAllUniverse().subscribe(data => {
-    this.dataSource = new MatTableDataSource<Universe>(data);
-  });
-}
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.dataSource.filterPredicate = (data, filter) =>
+      (data[this.selectedColumn]?.toString().toLowerCase().includes(filter) ?? false);
+    this.dataSource.filter = filterValue;
+  }
 
-deleteUniverse(id: string) {
-  let dialogRef = this.dialog.open(AlertDialogComponent, {
-    data: {msg: 'Удалить элемент?'}
-  })
+  ngAfterViewInit() {
+    this.getDataSource();
+  }
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (result)
-    this.universeService.deleteUniverse(id).subscribe(data => {
-      this.getDataSource()
-      // this.dialog.open(AlertDialogComponent, {
-      //   data: {msg: 'Элемент удален'}
-      // })
-      this.popUpEvent.emit('Элемент удален')
+  deleteUniverse(id: string) {
+    let dialogRef = this.dialog.open(AlertDialogComponent, {
+      data: {msg: 'Удалить элемент?'}
     })
-  })
-}
 
-editUniverse(id: number) {
-  //this.editUniverseNum = id;
-  let newUniverse = this.dataSource.data[id];
-
-  const dialogRef = this.dialog.open(UniverseCreateDialogComponent, {
-    data: { universe: newUniverse },
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-    newUniverse.name = result.name
-    newUniverse.size = result.size
-    newUniverse.composition = result.composition
-    this.universeService.updateUniverse(newUniverse.id, newUniverse).subscribe(data => {
-      this.getDataSource();
-      // this.dialog.open(AlertDialogComponent, {
-      //   data: {msg: 'Элемент изменен'}
-      // })
-      this.popUpEvent.emit('Элемент изменен')
+    dialogRef.afterClosed().subscribe(result => {
+      if (result)
+      this.universeService.deleteUniverse(id).subscribe(data => {
+        this.getDataSource()
+        this.popUpEvent.emit('Элемент удален')
+      })
     })
-  });
-}
+  }
 
-saveUniverse(i: number) {
-  this.universeService.updateUniverse(this.dataSource.data[i].id, this.dataSource.data[i]).subscribe(data => {
-    this.editUniverseNum = -1;
-  });
-}
+  editUniverse(id: number) {
+    //this.editUniverseNum = id;
+    let newUniverse = this.dataSource.data[id];
 
-addUniverse() {
-  let newUniverse: Universe = {
-    id: '',
-    name: '',
-    size: 0,
-    composition: ''
-  };
-  const dialogRef = this.dialog.open(UniverseCreateDialogComponent, {
-    data: { universe: newUniverse },
-  });
+    const dialogRef = this.dialog.open(UniverseCreateDialogComponent, {
+      data: { universe: newUniverse },
+    });
 
-  dialogRef.afterClosed().subscribe(result => {
-    newUniverse.name = result.name
-    newUniverse.size = result.size
-    newUniverse.composition = result.composition
-    this.universeService.addUniverse(newUniverse).subscribe(data => {
-      this.getDataSource();
-      // this.dialog.open(AlertDialogComponent, {
-      //   data: {msg: 'Элемент добавлен'}
-      // })
-      this.popUpEvent.emit('Элемент добавлен')
-    })
-  });
-}
+    dialogRef.afterClosed().subscribe(result => {
+      newUniverse.name = result.name
+      newUniverse.size = result.size
+      newUniverse.composition = result.composition
+      this.universeService.updateUniverse(newUniverse.id, newUniverse).subscribe(data => {
+        this.getDataSource();
+        this.popUpEvent.emit('Элемент изменен')
+      })
+    });
+  }
+
+  saveUniverse(i: number) {
+    this.universeService.updateUniverse(this.dataSource.data[i].id, this.dataSource.data[i]).subscribe(data => {
+      this.editUniverseNum = -1;
+    });
+  }
+
+  addUniverse() {
+    let newUniverse: Universe = {
+      id: '',
+      name: '',
+      size: 0,
+      composition: ''
+    };
+    const dialogRef = this.dialog.open(UniverseCreateDialogComponent, {
+      data: { universe: newUniverse },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      newUniverse.name = result.name
+      newUniverse.size = result.size
+      newUniverse.composition = result.composition
+      this.universeService.addUniverse(newUniverse).subscribe(data => {
+        this.getDataSource();
+        this.popUpEvent.emit('Элемент добавлен')
+      })
+    });
+  }
 
   getDataSource() {
     this.universeService.getAllUniverse().subscribe(data => {
       this.dataSource = new MatTableDataSource(data);
+      this.dataSource.sort = this.sort;
     });
   }
 }

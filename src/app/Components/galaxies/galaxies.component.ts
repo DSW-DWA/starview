@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {Component, EventEmitter, AfterViewInit, Output, ViewChild} from '@angular/core';
+import { MatSort } from "@angular/material/sort";
 import { MatDialog } from '@angular/material/dialog';
 import { Galaxy } from 'src/app/Interfaces/galaxy';
 import { Universe } from 'src/app/Interfaces/universe';
@@ -12,30 +13,35 @@ import { MatTableDataSource } from '@angular/material/table';
   templateUrl: './galaxies.component.html',
   styleUrls: ['./galaxies.component.css']
 })
-export class GalaxiesComponent {
+export class GalaxiesComponent implements AfterViewInit {
   displayedColumns: string[] = ['name', 'size', 'shape', 'composition', 'distance_from_earth', 'universe', 'actions'];
   dataSource = new MatTableDataSource<Galaxy>([]);
   editGalaxyNum = -1;
-  editGalaxyDef: Galaxy | undefined;
   universeList: Universe[] = [];
   @Output() popUpEvent = new EventEmitter<string>();
+  selectedColumn: string = this.displayedColumns[0];
+
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(
     private starService: StarService,
     public dialog: MatDialog
   ) { }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.getDataSource();
-
     this.starService.getAllUniverse().subscribe(data => {
       this.universeList = data;
     });
   }
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.dataSource.filterPredicate = (data, filter) =>
+      (data[this.selectedColumn]?.toString().toLowerCase().includes(filter) ?? false);
+    this.dataSource.filter = filterValue;
   }
+
   deleteGalaxy(id: string) {
     let dialogRef = this.dialog.open(AlertDialogComponent, {
       data: {msg: 'Удалить элемент?'}
@@ -127,10 +133,12 @@ export class GalaxiesComponent {
   getDataSource() {
     this.starService.getAllGalaxies().subscribe(data => {
       this.dataSource = new MatTableDataSource(data);
+      this.dataSource.sort = this.sort;
     });
 
     this.starService.getAllUniverse().subscribe(data => {
       this.universeList = data;
+      this.dataSource.sort = this.sort;
     });
   }
 }

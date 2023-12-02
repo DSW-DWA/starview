@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {Component, EventEmitter, AfterViewInit, Output, ViewChild} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Galaxy } from 'src/app/Interfaces/galaxy';
 import { Star } from 'src/app/Interfaces/star';
@@ -6,33 +6,47 @@ import { StarService } from 'src/app/Services/star.service';
 import { StarCreateDialogComponent } from '../star-create-dialog/star-create-dialog.component';
 import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-stars',
   templateUrl: './stars.component.html',
   styleUrls: ['./stars.component.css']
 })
-export class StarsComponent {
+export class StarsComponent implements AfterViewInit {
   displayedColumns: string[] = ['name', 'spectral_type', 'luminosity', 'distance_from_earth', 'temperature', 'galaxy', 'actions'];
   dataSource = new MatTableDataSource<Star>([]);
   editElementNum = -1;
-  editElementDef: Star | undefined;
   galaxyList: Galaxy[] = [];
   @Output() popUpEvent = new EventEmitter<string>();
-  
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  selectedColumn: string = this.displayedColumns[0];
+
   constructor(
     private starService: StarService,
     public dialog: MatDialog
   ){}
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.dataSource.filterPredicate = (data, filter) =>
+      (data[this.selectedColumn]?.toString().toLowerCase().includes(filter) ?? false);
+    this.dataSource.filter = filterValue;
   }
-  ngOnInit() {
+
+  ngAfterViewInit() {
     this.getDataSource();
+  }
+
+  getDataSource() {
+    this.starService.getAllStars().subscribe(data => {
+      this.dataSource = new MatTableDataSource(data);
+      this.dataSource.sort = this.sort;
+    });
 
     this.starService.getAllGalaxies().subscribe(data => {
       this.galaxyList = data;
+      this.dataSource.sort = this.sort;
     });
   }
 
@@ -45,16 +59,12 @@ export class StarsComponent {
       if (result)
       this.starService.deleteStar(id).subscribe(data => {
         this.getDataSource()
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент удален'}
-        // })
         this.popUpEvent.emit('Элемент удален')
       })
     })
   }
 
   editElement(id: number){
-    //this.editElementNum = id;
     let netStar = this.dataSource.data[id];
 
     const dialogRef = this.dialog.open(StarCreateDialogComponent, {
@@ -70,9 +80,6 @@ export class StarsComponent {
       netStar.galaxy = result.galaxy
       this.starService.updateStar(netStar.id, netStar).subscribe(data => {
         this.getDataSource()
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент изменен'}
-        // })
         this.popUpEvent.emit('Элемент изменен')
       })
     });
@@ -111,21 +118,8 @@ export class StarsComponent {
       netStar.galaxy = result.galaxy
       this.starService.addStar(netStar).subscribe(data => {
         this.getDataSource()
-        // this.dialog.open(AlertDialogComponent, {
-        //   data: {msg: 'Элемент добавлен'}
-        // })
         this.popUpEvent.emit('Элемент добавлен')
       })
-    });
-  }
-
-  getDataSource() {
-    this.starService.getAllStars().subscribe(data => {
-      this.dataSource = new MatTableDataSource(data);
-    });
-
-    this.starService.getAllGalaxies().subscribe(data => {
-      this.galaxyList = data;
     });
   }
 }

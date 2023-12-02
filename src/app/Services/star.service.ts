@@ -70,7 +70,7 @@ export class StarService {
     };
     return this.http.post<Universe>(this.url + 'universes', data);
   }
-  getAllPlanets() { 
+  getAllPlanets() {
     return this.http.get<Planet[]>(this.url + 'planets?limit=100&offset=0');
   }
   deletePlanet(id: string) {
@@ -167,6 +167,7 @@ export class StarService {
   getAllAudits() {
     return this.http.get<Audit[]>(this.url + "audit?limit=100&offset=0")
   }
+
   getAllReports(gid: string) {
     return this.http.get<ReportsInfo>(this.url + "reports/data?galaxy_id=" + gid)
   }
