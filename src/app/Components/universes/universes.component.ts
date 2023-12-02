@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Universe } from 'src/app/Interfaces/universe';
 import { StarService } from 'src/app/Services/star.service';
@@ -16,6 +16,7 @@ displayedColumns: string[] = ['name', 'size', 'composition', 'actions'];
 dataSource = new MatTableDataSource<Universe>([]);
 editUniverseNum = -1;
 editUniverseDef: Universe | undefined;
+@Output() popUpEvent = new EventEmitter<string>();
 
 constructor(
   private universeService: StarService,
@@ -36,12 +37,20 @@ ngOnInit() {
 }
 
 deleteUniverse(id: string) {
-  this.universeService.deleteUniverse(id).subscribe(data => {
-    this.getDataSource()
-    this.dialog.open(AlertDialogComponent, {
-      data: {msg: 'Элемент удален'}
+  let dialogRef = this.dialog.open(AlertDialogComponent, {
+    data: {msg: 'Удалить элемент?'}
+  })
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result)
+    this.universeService.deleteUniverse(id).subscribe(data => {
+      this.getDataSource()
+      // this.dialog.open(AlertDialogComponent, {
+      //   data: {msg: 'Элемент удален'}
+      // })
+      this.popUpEvent.emit('Элемент удален')
     })
-  });
+  })
 }
 
 editUniverse(id: number) {
@@ -58,9 +67,10 @@ editUniverse(id: number) {
     newUniverse.composition = result.composition
     this.universeService.updateUniverse(newUniverse.id, newUniverse).subscribe(data => {
       this.getDataSource();
-      this.dialog.open(AlertDialogComponent, {
-        data: {msg: 'Элемент изменен'}
-      })
+      // this.dialog.open(AlertDialogComponent, {
+      //   data: {msg: 'Элемент изменен'}
+      // })
+      this.popUpEvent.emit('Элемент изменен')
     })
   });
 }
@@ -88,9 +98,10 @@ addUniverse() {
     newUniverse.composition = result.composition
     this.universeService.addUniverse(newUniverse).subscribe(data => {
       this.getDataSource();
-      this.dialog.open(AlertDialogComponent, {
-        data: {msg: 'Элемент добавлен'}
-      })
+      // this.dialog.open(AlertDialogComponent, {
+      //   data: {msg: 'Элемент добавлен'}
+      // })
+      this.popUpEvent.emit('Элемент добавлен')
     })
   });
 }

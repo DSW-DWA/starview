@@ -2,19 +2,19 @@
 [selectedIndex]="selected.value"
 (selectedIndexChange)="selected.setValue($event)">
   <mat-tab label="Созвездия"> 
-    <app-constellations *ngIf="selected.value === 0"></app-constellations>
+    <app-constellations (popUpEvent)="showPopup($event)" *ngIf="selected.value === 0"></app-constellations>
   </mat-tab> 
   <mat-tab label="Вселенные">
-    <app-universes *ngIf="selected.value === 1"></app-universes>
+    <app-universes (popUpEvent)="showPopup($event)" *ngIf="selected.value === 1"></app-universes>
   </mat-tab>
   <mat-tab label="Планеты"> 
-    <app-planets *ngIf="selected.value === 2"></app-planets>
+    <app-planets (popUpEvent)="showPopup($event)" *ngIf="selected.value === 2"></app-planets>
   </mat-tab>
   <mat-tab label="Галактики">
-    <app-galaxies *ngIf="selected.value === 3"></app-galaxies>
+    <app-galaxies (popUpEvent)="showPopup($event)" *ngIf="selected.value === 3"></app-galaxies>
   </mat-tab>
   <mat-tab label="Звезды">
-    <app-stars *ngIf="selected.value === 4"></app-stars>
+    <app-stars (popUpEvent)="showPopup($event)" *ngIf="selected.value === 4"></app-stars>
   </mat-tab>
   <mat-tab label="Другое">
     <app-other *ngIf="selected.value === 5"></app-other>
@@ -23,3 +23,6 @@
     <app-audits *ngIf="selected.value === 6"></app-audits>
   </mat-tab>
 </mat-tab-group>
+<div class="popUp" *ngIf="popUpMsg">
+  {{popUpMsg}}
+</div>

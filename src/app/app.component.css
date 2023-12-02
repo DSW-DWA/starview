@@ -1,0 +1,9 @@
+.popUp {
+    position: absolute;
+    top: 92vh;
+    left: 1vw;
+    padding: 10px;
+    background-color: wheat;
+    stroke: black;
+
+}

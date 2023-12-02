@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Galaxy } from 'src/app/Interfaces/galaxy';
 import { Universe } from 'src/app/Interfaces/universe';
@@ -18,6 +18,7 @@ export class GalaxiesComponent {
   editGalaxyNum = -1;
   editGalaxyDef: Galaxy | undefined;
   universeList: Universe[] = [];
+  @Output() popUpEvent = new EventEmitter<string>();
 
   constructor(
     private starService: StarService,
@@ -36,12 +37,20 @@ export class GalaxiesComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   deleteGalaxy(id: string) {
-    this.starService.deleteGalaxy(id).subscribe(data => {
-      this.getDataSource()
-      this.dialog.open(AlertDialogComponent, {
-        data: {msg: 'Элемент удален'}
+    let dialogRef = this.dialog.open(AlertDialogComponent, {
+      data: {msg: 'Удалить элемент?'}
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result)
+      this.starService.deleteGalaxy(id).subscribe(data => {
+        this.getDataSource()
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент удален'}
+        // })
+        this.popUpEvent.emit('Элемент удален')
       })
-    });
+    })
   }
 
   editGalaxy(index: number) {
@@ -62,9 +71,10 @@ export class GalaxiesComponent {
 
       this.starService.updateGalaxy(newGalaxy.id,newGalaxy).subscribe(data => {
         this.getDataSource();
-        this.dialog.open(AlertDialogComponent, {
-          data: {msg: 'Элемент изменен'}
-        })
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент изменен'}
+        // })
+        this.popUpEvent.emit('Элемент изменен')
       })
     });
   }
@@ -85,7 +95,7 @@ export class GalaxiesComponent {
       composition: '',
       distance_from_earth: 0,
       universe: {
-        id: '',
+        id: this.universeList[0].id,
         name: '',
         size: 0,
         composition: ''
@@ -106,9 +116,10 @@ export class GalaxiesComponent {
 
       this.starService.addGalaxy(newGalaxy).subscribe(data => {
         this.getDataSource();
-        this.dialog.open(AlertDialogComponent, {
-          data: {msg: 'Элемент добавлен'}
-        })
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент добавлен'}
+        // })
+        this.popUpEvent.emit('Элемент добавлен')
       })
     });
   }

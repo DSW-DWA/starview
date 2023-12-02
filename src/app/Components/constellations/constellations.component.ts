@@ -1,13 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Constellation } from 'src/app/Interfaces/constellation';
 import { StarService } from 'src/app/Services/star.service';
-import { FormsModule,  NgModel } from "@angular/forms";
 import { Galaxy } from 'src/app/Interfaces/galaxy';
 import { MatDialog } from '@angular/material/dialog';
 import { ConstellationCreateDialogComponent } from '../constellation-create-dialog/constellation-create-dialog.component';
 import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
-import { DataSource } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-constellations',
@@ -20,6 +19,9 @@ export class ConstellationsComponent implements OnInit {
   editElementNum = -1;
   editElementDef: Constellation | undefined;
   galaxyList: Galaxy[] = [];
+
+  @ViewChild(MatSort)sort: MatSort;
+  @Output() popUpEvent = new EventEmitter<string>();
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -39,12 +41,20 @@ export class ConstellationsComponent implements OnInit {
   }
 
   deleteElement(id: string){
-    this.starService.deleteConstellation(id).subscribe(data => {
-      this.getDataSource()
-      this.dialog.open(AlertDialogComponent, {
-        data: {msg: 'Элемент удален'}
-      })
+    let dialogRef = this.dialog.open(AlertDialogComponent, {
+      data: {msg: 'Удалить элемент?'}
     })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result)
+      this.starService.deleteConstellation(id).subscribe(data => {
+        this.getDataSource()
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент удален'}
+        // })
+        this.popUpEvent.emit('Элемент удален')
+      })
+    }) 
   }
 
   editElement(id: number){
@@ -63,11 +73,12 @@ export class ConstellationsComponent implements OnInit {
       netConst.galaxy = result.galaxy
       this.starService.updateConstellation(netConst.id, netConst).subscribe(data => {
         this.getDataSource()
-        this.dialog.open(AlertDialogComponent, {
-          data: {msg: 'Элемент изменен'}
-        })
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент изменен'}
+        // })
+        this.popUpEvent.emit('Элемент изменен')
       })
-    });
+    })
   }
 
   saveElement(i: number){
@@ -86,7 +97,7 @@ export class ConstellationsComponent implements OnInit {
       abbreviation: '',
       history: '',
       galaxy: {
-        id: '',
+        id: this.galaxyList[0].id,
         name: ''
       }
     }
@@ -102,15 +113,17 @@ export class ConstellationsComponent implements OnInit {
       netConst.galaxy = result.galaxy
       this.starService.addConstellation(netConst).subscribe(data => {
         this.getDataSource()
-        this.dialog.open(AlertDialogComponent, {
-          data: {msg: 'Элемент добавлен'}
-        })
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент добавлен'}
+        // })
+        this.popUpEvent.emit('Элемент добавлен')
       })
     });
   }
   getDataSource() {
     this.starService.getAllConstellations().subscribe(data => {
       this.dataSource = new MatTableDataSource<Constellation>(data)
+      this.dataSource.sort = this.sort
     })
 
     this.starService.getAllGalaxies().subscribe(data => {

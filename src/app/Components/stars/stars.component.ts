@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Galaxy } from 'src/app/Interfaces/galaxy';
 import { Star } from 'src/app/Interfaces/star';
@@ -18,6 +18,7 @@ export class StarsComponent {
   editElementNum = -1;
   editElementDef: Star | undefined;
   galaxyList: Galaxy[] = [];
+  @Output() popUpEvent = new EventEmitter<string>();
   
   constructor(
     private starService: StarService,
@@ -36,12 +37,20 @@ export class StarsComponent {
   }
 
   deleteElement(id: string){
-    this.starService.deleteStar(id).subscribe(data => {
-      this.getDataSource()
-      this.dialog.open(AlertDialogComponent, {
-        data: {msg: 'Элемент удален'}
+    let dialogRef = this.dialog.open(AlertDialogComponent, {
+      data: {msg: 'Удалить элемент?'}
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result)
+      this.starService.deleteStar(id).subscribe(data => {
+        this.getDataSource()
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент удален'}
+        // })
+        this.popUpEvent.emit('Элемент удален')
       })
-    });
+    })
   }
 
   editElement(id: number){
@@ -61,9 +70,10 @@ export class StarsComponent {
       netStar.galaxy = result.galaxy
       this.starService.updateStar(netStar.id, netStar).subscribe(data => {
         this.getDataSource()
-        this.dialog.open(AlertDialogComponent, {
-          data: {msg: 'Элемент изменен'}
-        })
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент изменен'}
+        // })
+        this.popUpEvent.emit('Элемент изменен')
       })
     });
   }
@@ -84,7 +94,7 @@ export class StarsComponent {
       distance_from_earth: 0,
       temperature: 0,
       galaxy: {
-        id: '',
+        id: this.galaxyList[0].id,
         name: ''
       }
     };
@@ -101,9 +111,10 @@ export class StarsComponent {
       netStar.galaxy = result.galaxy
       this.starService.addStar(netStar).subscribe(data => {
         this.getDataSource()
-        this.dialog.open(AlertDialogComponent, {
-          data: {msg: 'Элемент добавлен'}
-        })
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент добавлен'}
+        // })
+        this.popUpEvent.emit('Элемент добавлен')
       })
     });
   }

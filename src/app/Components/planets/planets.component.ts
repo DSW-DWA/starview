@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Planet } from 'src/app/Interfaces/planet';
 import { Star } from 'src/app/Interfaces/star';
@@ -18,6 +18,7 @@ export class PlanetsComponent {
   editPlanetNum = -1;
   editPlanetDef: Planet | undefined;
   starList: Star[] = [];
+  @Output() popUpEvent = new EventEmitter<string>();
 
   constructor(
     private planetService: StarService,
@@ -38,12 +39,20 @@ export class PlanetsComponent {
   }
 
   deletePlanet(id: string) {
-    this.planetService.deletePlanet(id).subscribe(data => {
-      this.getDataSource()
-      this.dialog.open(AlertDialogComponent, {
-        data: {msg: 'Элемент удален'}
+    let dialogRef = this.dialog.open(AlertDialogComponent, {
+      data: {msg: 'Удалить элемент?'}
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result)
+      this.planetService.deletePlanet(id).subscribe(data => {
+        this.getDataSource()
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент удален'}
+        // })
+        this.popUpEvent.emit('Элемент удален')
       })
-    });
+    })
   }
 
   editPlanet(id: number) {
@@ -64,9 +73,10 @@ export class PlanetsComponent {
 
       this.planetService.updatePlanet(newPlanet.id, newPlanet).subscribe(data => {
         this.getDataSource()
-        this.dialog.open(AlertDialogComponent, {
-          data: {msg: 'Элемент изменен'}
-        })
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент изменен'}
+        // })
+        this.popUpEvent.emit('Элемент изменен')
       })
     });
   }
@@ -87,7 +97,7 @@ export class PlanetsComponent {
       distance_from_star: 0,
       surface_temperature: 0,
       star: {
-        id: '',
+        id: this.starList[0].id,
         name: ''
       }
   };
@@ -106,9 +116,10 @@ export class PlanetsComponent {
 
       this.planetService.addPlanet(newPlanet).subscribe(data => {
         this.getDataSource()
-        this.dialog.open(AlertDialogComponent, {
-          data: {msg: 'Элемент добавлен'}
-        })
+        // this.dialog.open(AlertDialogComponent, {
+        //   data: {msg: 'Элемент добавлен'}
+        // })
+        this.popUpEvent.emit('Элемент добавлен')
       })
     });
   }

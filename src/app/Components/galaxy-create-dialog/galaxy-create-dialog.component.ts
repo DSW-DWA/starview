@@ -18,6 +18,9 @@ export class GalaxyCreateDialogComponent {
     public dialogRef: MatDialogRef<GalaxyCreateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: dataDialog) { }
 
+    ngOnInit(): void {
+      console.log(this.data);
+    }
     onNoClick(): void {
       this.dialogRef.close();
     }

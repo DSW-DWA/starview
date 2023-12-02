@@ -15,9 +15,13 @@ export class AlertDialogComponent {
     public dialogRef: MatDialogRef<AlertDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: dataDialog) { }
 
+    onNoClick(): void {
+      this.dialogRef.close();
+    }
+    
     ngOnInit(): void {
-      setTimeout(() => {
-        this.dialogRef.close();
-      }, 3000);
+      // setTimeout(() => {
+      //   this.dialogRef.close();
+      // }, 3000);
     }
 }
