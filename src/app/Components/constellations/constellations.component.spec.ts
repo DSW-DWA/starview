@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ConstellationsComponent } from './constellations.component';
+import {ConstellationsComponent} from './constellations.component';
 
 describe('ConstellationsComponent', () => {
   let component: ConstellationsComponent;

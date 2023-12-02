@@ -1,7 +1,7 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Galaxy } from 'src/app/Interfaces/galaxy';
-import { Universe } from 'src/app/Interfaces/universe';
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Galaxy} from 'src/app/Interfaces/galaxy';
+import {Universe} from 'src/app/Interfaces/universe';
 
 interface dataDialog {
   galaxy: Galaxy,

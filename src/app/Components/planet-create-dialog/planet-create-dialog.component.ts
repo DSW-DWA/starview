@@ -1,10 +1,10 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Planet } from 'src/app/Interfaces/planet';
-import { Star } from 'src/app/Interfaces/star';
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Planet} from 'src/app/Interfaces/planet';
+import {Star} from 'src/app/Interfaces/star';
 
 interface dataDialog {
-  planet: Planet, 
+  planet: Planet,
   starList: Star[]
 }
 

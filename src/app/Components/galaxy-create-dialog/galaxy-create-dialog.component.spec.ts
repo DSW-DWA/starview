@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { GalaxyCreateDialogComponent } from './galaxy-create-dialog.component';
+import {GalaxyCreateDialogComponent} from './galaxy-create-dialog.component';
 
 describe('GalaxyCreateDialogComponent', () => {
   let component: GalaxyCreateDialogComponent;

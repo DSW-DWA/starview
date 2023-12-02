@@ -1,12 +1,12 @@
 import {AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import { Constellation } from 'src/app/Interfaces/constellation';
-import { StarService } from 'src/app/Services/star.service';
-import { Galaxy } from 'src/app/Interfaces/galaxy';
-import { MatDialog } from '@angular/material/dialog';
-import { ConstellationCreateDialogComponent } from '../constellation-create-dialog/constellation-create-dialog.component';
-import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import {Constellation} from 'src/app/Interfaces/constellation';
+import {StarService} from 'src/app/Services/star.service';
+import {Galaxy} from 'src/app/Interfaces/galaxy';
+import {MatDialog} from '@angular/material/dialog';
+import {ConstellationCreateDialogComponent} from '../constellation-create-dialog/constellation-create-dialog.component';
+import {AlertDialogComponent} from '../alert-dialog/alert-dialog.component';
+import {MatTableDataSource} from '@angular/material/table';
+import {MatSort} from '@angular/material/sort';
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({

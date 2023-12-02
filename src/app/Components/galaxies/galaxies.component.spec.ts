@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { GalaxiesComponent } from './galaxies.component';
+import {GalaxiesComponent} from './galaxies.component';
 
 describe('GalaxiesComponent', () => {
   let component: GalaxiesComponent;

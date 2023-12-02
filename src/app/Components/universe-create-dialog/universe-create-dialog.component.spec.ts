@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { UniverseCreateDialogComponent } from './universe-create-dialog.component';
+import {UniverseCreateDialogComponent} from './universe-create-dialog.component';
 
 describe('UniverseCreateDialogComponent', () => {
   let component: UniverseCreateDialogComponent;

@@ -1,13 +1,13 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Constellation } from '../Interfaces/constellation';
-import { Universe } from '../Interfaces/universe';
-import { Planet } from '../Interfaces/planet';
-import { Galaxy } from '../Interfaces/galaxy';
-import { Star } from '../Interfaces/star';
-import { Reports } from '../Interfaces/reports';
-import { Audit } from '../Interfaces/audit';
-import { ReportsInfo } from '../Interfaces/ReportsInfo';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Constellation} from '../Interfaces/constellation';
+import {Universe} from '../Interfaces/universe';
+import {Planet} from '../Interfaces/planet';
+import {Galaxy} from '../Interfaces/galaxy';
+import {Star} from '../Interfaces/star';
+import {Reports} from '../Interfaces/reports';
+import {Audit} from '../Interfaces/audit';
+import {ReportsInfo} from '../Interfaces/ReportsInfo';
 
 @Injectable({
   providedIn: 'root'

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { PlanetCreateDialogComponent } from './planet-create-dialog.component';
+import {PlanetCreateDialogComponent} from './planet-create-dialog.component';
 
 describe('PlanetCreateDialogComponent', () => {
   let component: PlanetCreateDialogComponent;

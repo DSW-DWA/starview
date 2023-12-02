@@ -1,9 +1,9 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
-import { Audit } from 'src/app/Interfaces/audit';
-import { StarService } from 'src/app/Services/star.service';
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {MatTableDataSource} from '@angular/material/table';
+import {MatSort} from '@angular/material/sort';
+import {Audit} from 'src/app/Interfaces/audit';
+import {StarService} from 'src/app/Services/star.service';
 
 @Component({
   selector: 'app-audits',

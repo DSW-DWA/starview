@@ -1,12 +1,12 @@
-import {Component, EventEmitter, AfterViewInit, Output, ViewChild, OnInit, OnDestroy} from '@angular/core';
-import { MatSort } from "@angular/material/sort";
-import { MatDialog } from '@angular/material/dialog';
-import { Galaxy } from 'src/app/Interfaces/galaxy';
-import { Universe } from 'src/app/Interfaces/universe';
-import { StarService } from 'src/app/Services/star.service';
-import { GalaxyCreateDialogComponent } from '../galaxy-create-dialog/galaxy-create-dialog.component';
-import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
-import { MatTableDataSource } from '@angular/material/table';
+import {AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {MatSort} from "@angular/material/sort";
+import {MatDialog} from '@angular/material/dialog';
+import {Galaxy} from 'src/app/Interfaces/galaxy';
+import {Universe} from 'src/app/Interfaces/universe';
+import {StarService} from 'src/app/Services/star.service';
+import {GalaxyCreateDialogComponent} from '../galaxy-create-dialog/galaxy-create-dialog.component';
+import {AlertDialogComponent} from '../alert-dialog/alert-dialog.component';
+import {MatTableDataSource} from '@angular/material/table';
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({

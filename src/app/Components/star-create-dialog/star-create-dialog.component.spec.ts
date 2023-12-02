@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { StarCreateDialogComponent } from './star-create-dialog.component';
+import {StarCreateDialogComponent} from './star-create-dialog.component';
 
 describe('StarCreateDialogComponent', () => {
   let component: StarCreateDialogComponent;
